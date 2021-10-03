@@ -1,0 +1,21 @@
+<idea-plugin>
+    <id>org.example.BStruct</id>
+    <name>BStruct</name>
+    <vendor email="softoad@yandex.ru" url="http://www.undefined.com">Porokhin Aleksander</vendor>
+
+    <description>Basic syntax highlighting and navigation for Basic Language</description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="Basic" implementationClass="porokhin.bstruct.BasicFileType" fieldName="INSTANCE"
+                  language="Basic" extensions="bas" hashBangs="*.bas;*.mb"/>
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
