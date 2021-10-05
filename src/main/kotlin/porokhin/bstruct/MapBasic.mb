@@ -1,0 +1,262 @@
+Include "MAPBASIC.DEF"
+Include  "GET_TAB.MB"
+Include "AbotLib.def"
+Declare Sub Main
+Declare Sub SelChangedHandler
+declare sub connect
+declare sub disconnect
+declare sub selectionlistener
+declare sub errorhandler
+Declare sub RemoteMsgHandler
+declare sub paint
+declare sub paintselection
+declare sub paintselection2
+declare sub paintrequest(req as String)
+declare sub paintrequest2(req as String)
+declare sub conditionOnClick
+declare function parseCondition(value as String) as String
+
+Dim ar As Integer
+Dim connection1 As Integer
+Dim connection2 As Integer
+Dim activated as logical
+dim table as String
+dim selectedStyle as Brush
+
+sub Main
+	activated = 0
+	create menu "Редактор базы" as
+	"Подключиться" calling connect,
+	"Оформить выборку" id 201 calling paintselection2,
+	"Оформить выборку 2" id 101 calling paintselection
+	alter menu bar add "Редактор базы"
+	alter menu item id 201 disable
+	alter menu item id 101 disable
+
+end sub
+
+sub selchangedhandler
+	onerror goto ex
+	if activated = 1 then
+		if IsFieldExist("Selection", "Id") = false or ObjectInfo(Selection.obj, OBJ_INFO_TYPE) <> OBJ_TYPE_REGION then exit sub
+		end if
+		ar = selection.id
+		if commandinfo(1) = 1 then
+			dim sq as Float
+			sq = CartesianArea(selection.obj, "hectare")
+			if sq = 0 then
+				ddepoke connection1, "selection", "60001"
+			else
+				ddepoke connection1, "selection_with_area", STR$(ar) + "|" + STR$(sq)
+			end if
+		end if
+	end if
+	exit sub
+ex:
+	call errorhandler
+end sub
+
+sub connect
+	onerror goto exc
+	connection1 = ddeinitiate("geobaseeditor", "areaselection")
+	connection2 = ddeinitiate("geobaseeditor", "currentselection")
+	print "Редактор базы подключен"
+	activated = 1
+	alter menu item id 201 enable
+	alter menu item id 101 enable
+	exit sub
+exc:
+	note "Не удалось подключится к редактору"
+end sub
+
+sub disconnect
+	ddeterminateall
+	print "Редактор базы отключен"
+	activated = 0
+end sub
+
+dim selectedType1, selectedType2, selectedType3, logic2, logic3 as SmallInt
+dim value1, value2, value3, condition1, condition2, condition3 as String
+
+
+
+sub paintselection
+    table = GetTableName("Выберите слой", 0, 0)
+	dialog title "Оформление"
+		control statictext
+			title "Выберите стиль"
+			'position 6, 115
+		control BrushPicker
+			into selectedStyle
+			'position 68, 105
+		control OKButton
+		control CancelButton
+		dim r as String
+		r = "all"
+	call paintrequest(r)
+end sub
+
+sub paintselection2
+    table = GetTableName("Выберите слой", 0, 0)
+	dialog title "Оформление"
+		control statictext
+			title "Выберите стиль"
+			'position 6, 115
+		control BrushPicker
+			into selectedStyle
+			'position 68, 105
+		control OKButton
+		control CancelButton
+		dim r as String
+		r = "ranges"
+	call paintrequest2(r)
+end sub
+
+sub conditionOnClick
+    dim selectedType, conditionId as SmallInt
+    print "selected id " + triggerControl()
+    selectedType = readControlValue(triggerControl())
+    do case triggerControl()
+        case 1
+            conditionId = 2
+        case 5
+            conditionId = 6
+        case 9
+            conditionId = 10
+    end case
+    print "condition id " + conditionId
+    print "selected type " + selectedType
+    if selectedType = 3 or selectedType = 7 then
+        alter control conditionId
+            title "="
+    else alter control conditionId
+            title "=;<;>"
+    end if
+end sub
+
+function parseCondition(value as String) as String
+	do case value
+		case "1" parseCondition = "="
+		case "2" parseCondition = "<"
+		case "3" parseCondition = ">"
+	end case
+end function
+
+
+
+sub paintrequest(req as String)
+    dim response as String
+	print "send request to " + condition2 + " with topic: " + req
+    response = ddeRequest$(connection2, req)
+    if response = "0" then Note "Искомые выдела не найдены"
+    else
+	    print "response: " + response
+        dim startIdx, curIdsIdx, vId, cur_size as Integer
+        dim subStr as String
+        dim ids(0) as Float
+	    dim styles(0) as Brush
+        curIdsIdx = 1
+        startIdx = 1
+
+        while startIdx < Len(response)
+            subStr = Mid$(response, startIdx, 6)
+            startIdx = startIdx + 7
+
+            vId = Val(subStr)
+            cur_size = UBound(ids)
+            ReDim ids(cur_size + 2)
+            ReDim styles(cur_size + 2)
+            ids(curIdsIdx) = vId
+            ids(curIdsIdx + 1) = vId
+            styles(curIdsIdx) = selectedStyle
+            styles(curIdsIdx + 1) = selectedStyle
+            curIdsIdx = curIdsIdx + 2
+        wend
+		dim t as String
+		t = "painted" + CurTime()
+		'create table t using table
+		'create map for t using table
+		dim i, curId as Integer
+		create table idsTable (id Integer)
+		for i = 1 to UBound(ids) 
+			curId = ids(i)
+			insert into idsTable (Id) values (curId)
+			
+		Next
+		select * from table where Id in (select idsTable.Id from idsTable) into t
+		'print TableInfo(Res, TAB_INFO_NROWS)
+		'insert into t select * from Sel1
+		
+		'dim i as Integer
+		'for i=1 to UBound(ids) print ids(i) 
+		'Next
+		drop table idsTable
+        shade table with Id Ranges from variable ids style variable styles style replace off
+        note "Оформлено " + (cur_size / 2 + 1) + " выделов"
+    end if	
+end sub
+
+sub paintrequest2(req as String)
+    dim response as String
+	print "send request to " + connection2 + " with topic: " + req
+    response = ddeRequest$(connection2, req)
+    if response = "0" then Note "Искомые выдела не найдены"
+    else
+	    'print "response: " + response
+        dim startIdx, curIdsIdx, startId, endId, cur_size, sizeOfRange, size as Integer
+        dim subStr as String
+        dim ids(0) as Float
+	    dim styles(0) as Brush
+        curIdsIdx = 1
+        startIdx = 1
+		
+
+        while startIdx < Len(response)
+            subStr = Mid$(response, startIdx, 6)
+			startId = Val(subStr)
+            startIdx = startIdx + 7
+			subStr = Mid$(response, startIdx, 6)
+			endId = Val(subStr)
+			startIdx = startIdx + 7
+            cur_size = UBound(ids)
+			sizeOfRange = endId - startId + 1
+			'print "sizeOFRange: " + sizeOfRange
+			size = size + sizeOfRange
+            ReDim ids(cur_size + 2)
+            ReDim styles(cur_size + 2)
+			'print "size of ids: " + UBound(ids)
+			'print "curIdsIdx: " + curIdsIdx
+            ids(curIdsIdx) = startId
+            ids(curIdsIdx + 1) = endId
+            styles(curIdsIdx) = selectedStyle
+            styles(curIdsIdx + 1) = selectedStyle
+            curIdsIdx = curIdsIdx + 2
+        wend
+		
+        shade table with Id Ranges from variable ids style variable styles style replace off
+        note "Оформлено " + (size) + " выделов"
+    end if	
+end sub
+
+sub selectionlistener
+
+end sub
+
+sub errorhandler
+	dim code as Integer
+	code = err()
+	print "error " + code
+	activated = 0
+	if code = 696 then call disconnect
+	else
+		call disconnect
+		call connect
+	end if
+end sub
+
+'sub RemoteMsgHandler()
+'	'Dim data As String
+'	'data = CommandInfo()
+'	'print "requested data : " + data
+'End sub
+

@@ -17,6 +17,8 @@ dependencies {
     testImplementation("junit", "junit", "4.12")
 }
 
+sourceSets["main"].java.srcDirs("src/main/gen")
+
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     setVersion("2021.1")

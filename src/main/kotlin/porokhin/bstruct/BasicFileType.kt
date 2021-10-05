@@ -3,7 +3,7 @@ package porokhin.bstruct
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
-class BasicFileType: LanguageFileType(BasicLanguage()) {
+class BasicFileType: LanguageFileType(BasicLanguage2.INSTANCE) {
     override fun getName(): String {
         return "Basic"
     }

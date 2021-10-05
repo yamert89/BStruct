@@ -1,0 +1,35 @@
+{
+elementTypeClass = 'porokhin.bstruct.BasicTokenType'
+
+ tokens = [
+    OP_EQ="="
+    OP_OR="|"
+    OP_OPT="?"
+    OP_ONEMORE="+"
+    OP_ZEROMORE="*"
+    OP_AND="&"
+    OP_NOT="!"
+    LEFT_BRACE="{"
+    RIGHT_BRACE="}"
+    LEFT_BRACKET="["
+    RIGHT_BRACKET="]"
+    LEFT_PAREN="("
+    RIGHT_PAREN=")"
+    EXTERNAL_START="<<"
+    EXTERNAL_END=">>"
+    DIM="dim"
+    SUB="sub"
+    DECLARE="declare"
+
+    space='regexp:\s+'
+    id="regexp:\w+"
+    string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\\'|\\)*\")"
+    number="regexp:\d+"
+    line_comment="regexp:'.*"
+  ]
+}
+
+basicUnit ::= top*
+private top ::= keyword | symbolunit
+keyword ::= DIM | SUB | DECLARE
+symbolunit ::= OP_EQ | OP_OR | OP_AND
