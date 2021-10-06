@@ -17,6 +17,7 @@ public class SymbolunitImpl extends ASTWrapperPsiElement implements Symbolunit {
     super(node);
   }
 
+
   public void accept(@NotNull Visitor visitor) {
     visitor.visitSymbolunit(this);
   }

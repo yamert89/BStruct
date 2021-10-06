@@ -17,6 +17,7 @@ public class KeywordImpl extends ASTWrapperPsiElement implements Keyword {
     super(node);
   }
 
+
   public void accept(@NotNull Visitor visitor) {
     visitor.visitKeyword(this);
   }

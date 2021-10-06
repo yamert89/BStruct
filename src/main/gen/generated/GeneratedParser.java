@@ -3,8 +3,9 @@ package generated;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static generated.GeneratedTypes.*;
+
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static generated.GeneratedTypes.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.TokenSet;
@@ -48,7 +49,7 @@ public class GeneratedParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // DIM | SUB | DECLARE
+  // DIM | SUB | DECLARE | INCLUDE | AS | IF | END | EXIT
   public static boolean keyword(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "keyword")) return false;
     boolean r;
@@ -56,12 +57,17 @@ public class GeneratedParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, DIM);
     if (!r) r = consumeToken(b, SUB);
     if (!r) r = consumeToken(b, DECLARE);
+    if (!r) r = consumeToken(b, INCLUDE);
+    if (!r) r = consumeToken(b, AS);
+    if (!r) r = consumeToken(b, IF);
+    if (!r) r = consumeToken(b, END);
+    if (!r) r = consumeToken(b, EXIT);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // OP_EQ | OP_OR | OP_AND
+  // OP_EQ | OP_OR | OP_AND | LEFT_BRACKET | RIGHT_BRACKET | LEFT_PAREN | RIGHT_PAREN
   public static boolean symbolunit(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "symbolunit")) return false;
     boolean r;
@@ -69,6 +75,10 @@ public class GeneratedParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, OP_EQ);
     if (!r) r = consumeToken(b, OP_OR);
     if (!r) r = consumeToken(b, OP_AND);
+    if (!r) r = consumeToken(b, LEFT_BRACKET);
+    if (!r) r = consumeToken(b, RIGHT_BRACKET);
+    if (!r) r = consumeToken(b, LEFT_PAREN);
+    if (!r) r = consumeToken(b, RIGHT_PAREN);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

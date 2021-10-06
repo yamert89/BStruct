@@ -12,11 +12,14 @@ public interface GeneratedTypes {
   IElementType KEYWORD = new BasicTokenType("KEYWORD");
   IElementType SYMBOLUNIT = new BasicTokenType("SYMBOLUNIT");
 
+  IElementType AS = new IElementType("as", null);
   IElementType DECLARE = new IElementType("declare", null);
   IElementType DIM = new IElementType("dim", null);
-  IElementType EXTERNAL_END = new IElementType(">>", null);
-  IElementType EXTERNAL_START = new IElementType("<<", null);
+  IElementType END = new IElementType("end", null);
+  IElementType EXIT = new IElementType("exit", null);
   IElementType ID = new IElementType("id", null);
+  IElementType IF = new IElementType("if", null);
+  IElementType INCLUDE = new IElementType("include", null);
   IElementType LEFT_BRACE = new IElementType("{", null);
   IElementType LEFT_BRACKET = new IElementType("[", null);
   IElementType LEFT_PAREN = new IElementType("(", null);
@@ -34,6 +37,8 @@ public interface GeneratedTypes {
   IElementType RIGHT_PAREN = new IElementType(")", null);
   IElementType STRING = new IElementType("string", null);
   IElementType SUB = new IElementType("sub", null);
+  IElementType T_INTEGER = new IElementType("integer", null);
+  IElementType T_STRING = new IElementType("string", null);
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
