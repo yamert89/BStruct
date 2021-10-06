@@ -1,4 +1,5 @@
 {
+  parserUtilClass="generated.BasicParserUtil"
 elementTypeClass = 'porokhin.bstruct.BasicTokenType'
 
  tokens = [
@@ -15,11 +16,17 @@ elementTypeClass = 'porokhin.bstruct.BasicTokenType'
     RIGHT_BRACKET="]"
     LEFT_PAREN="("
     RIGHT_PAREN=")"
-    EXTERNAL_START="<<"
-    EXTERNAL_END=">>"
     DIM="dim"
     SUB="sub"
     DECLARE="declare"
+    INCLUDE="include"
+    AS="as"
+    IF="if"
+    END="end"
+    EXIT="exit"
+
+    T_INTEGER="integer"
+    T_STRING="string"
 
     space='regexp:\s+'
     id="regexp:\w+"
@@ -31,5 +38,5 @@ elementTypeClass = 'porokhin.bstruct.BasicTokenType'
 
 basicUnit ::= top*
 private top ::= keyword | symbolunit
-keyword ::= DIM | SUB | DECLARE
-symbolunit ::= OP_EQ | OP_OR | OP_AND
+keyword ::= DIM | SUB | DECLARE | INCLUDE | AS | IF | END | EXIT
+symbolunit ::= OP_EQ | OP_OR | OP_AND | LEFT_BRACKET | RIGHT_BRACKET | LEFT_PAREN | RIGHT_PAREN

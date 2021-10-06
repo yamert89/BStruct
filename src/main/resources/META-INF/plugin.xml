@@ -12,6 +12,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="Basic" implementationClass="porokhin.bstruct.BasicFileType" fieldName="INSTANCE"
                   language="BasicLanguage2" extensions="bas;mb" />
+        <lang.parserDefinition language="BasicLanguage2" implementationClass="porokhin.bstruct.BasicParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="BasicLanguage2" implementationClass="porokhin.bstruct.BasicLSyntaxHighlighterFactory" />
         <!-- Add your extensions here -->
     </extensions>
 

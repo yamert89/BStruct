@@ -48,11 +48,16 @@ LINE_COMMENT='.*
   "]"                 { return RIGHT_BRACKET; }
   "("                 { return LEFT_PAREN; }
   ")"                 { return RIGHT_PAREN; }
-  "<<"                { return EXTERNAL_START; }
-  ">>"                { return EXTERNAL_END; }
   "dim"               { return DIM; }
   "sub"               { return SUB; }
   "declare"           { return DECLARE; }
+  "include"           { return INCLUDE; }
+  "as"                { return AS; }
+  "if"                { return IF; }
+  "end"               { return END; }
+  "exit"              { return EXIT; }
+  "integer"           { return T_INTEGER; }
+  "string"            { return T_STRING; }
 
   {SPACE}             { return SPACE; }
   {ID}                { return ID; }
