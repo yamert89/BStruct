@@ -4,11 +4,9 @@ import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-import generated.GeneratedTypes
 
 class BasicLSyntaxHighlighter: SyntaxHighlighterBase() {
     companion object{
@@ -29,10 +27,10 @@ class BasicLSyntaxHighlighter: SyntaxHighlighterBase() {
 
     override fun getTokenHighlights(tokenType: IElementType?): Array<TextAttributesKey> {
         return when(tokenType){
-            GeneratedTypes.DIM, GeneratedTypes.DECLARE, GeneratedTypes.AS, GeneratedTypes.END, GeneratedTypes.EXIT,
-            GeneratedTypes.IF, GeneratedTypes.INCLUDE-> KEQORD_KEYS
-            GeneratedTypes.LINE_COMMENT -> COMMENT_KEYS
-            GeneratedTypes.T_INTEGER, GeneratedTypes.T_STRING -> TYPE_KEYS
+            BasicTypes.DIM, BasicTypes.DECLARE, BasicTypes.AS, BasicTypes.END, BasicTypes.EXIT,
+            BasicTypes.IF, BasicTypes.INCLUDE1-> KEQORD_KEYS
+            BasicTypes.LINE_COMMENT -> COMMENT_KEYS
+            BasicTypes.T_INTEGER, BasicTypes.T_STRING -> TYPE_KEYS
             TokenType.BAD_CHARACTER -> BAD_CHARACTERS_KEYS
             else -> EMPTY_KEYS
         }

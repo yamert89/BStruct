@@ -11,13 +11,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
-import generated.GeneratedParser
-import generated.GeneratedTypes
 
 class BasicParserDefinition: ParserDefinition {
     companion object{
         val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
-        val COMMENTS = TokenSet.create(GeneratedTypes.LINE_COMMENT)
+        val COMMENTS = TokenSet.create(BasicTypes.LINE_COMMENT)
         val FILE = IFileElementType(BasicLanguage2.INSTANCE)
     }
 
@@ -26,7 +24,7 @@ class BasicParserDefinition: ParserDefinition {
     }
 
     override fun createParser(project: Project?): PsiParser {
-        return GeneratedParser()
+        return BasicParser()
     }
 
     override fun getFileNodeType(): IFileElementType {
@@ -42,7 +40,7 @@ class BasicParserDefinition: ParserDefinition {
     }
 
     override fun createElement(node: ASTNode?): PsiElement {
-        return GeneratedTypes.Factory.createElement(node)
+        return BasicTypes.Factory.createElement(node)
     }
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile {

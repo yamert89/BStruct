@@ -1,11 +1,10 @@
 package porokhin.bstruct;
 
-import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
-import static generated.GeneratedTypes.*;
+import static porokhin.bstruct.BasicTypes.*;
 
 %%
 
@@ -25,9 +24,10 @@ import static generated.GeneratedTypes.*;
 EOL=\R
 WHITE_SPACE=\s+
 
+T_INTEGER=integer
 SPACE=[ \t\n\x0B\f\r]+
-ID=[a-zA-Z_0-9]+
-STRING=('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\'|\\)*\")
+NAME=[a-zA-Z_0-9]+
+STRING=(\".*\")
 NUMBER=[0-9]+
 LINE_COMMENT='.*
 
@@ -50,17 +50,19 @@ LINE_COMMENT='.*
   ")"                 { return RIGHT_PAREN; }
   "dim"               { return DIM; }
   "sub"               { return SUB; }
+  "function"          { return FUNCTION; }
   "declare"           { return DECLARE; }
-  "include"           { return INCLUDE; }
   "as"                { return AS; }
   "if"                { return IF; }
   "end"               { return END; }
   "exit"              { return EXIT; }
-  "integer"           { return T_INTEGER; }
+  "call"              { return CALL; }
   "string"            { return T_STRING; }
+  "INCLUDE"           { return INCLUDE1; }
 
+  {T_INTEGER}         { return T_INTEGER; }
   {SPACE}             { return SPACE; }
-  {ID}                { return ID; }
+  {NAME}              { return NAME; }
   {STRING}            { return STRING; }
   {NUMBER}            { return NUMBER; }
   {LINE_COMMENT}      { return LINE_COMMENT; }

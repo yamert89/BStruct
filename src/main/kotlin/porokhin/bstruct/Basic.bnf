@@ -1,6 +1,27 @@
 {
   parserUtilClass="generated.BasicParserUtil"
-elementTypeClass = 'porokhin.bstruct.BasicTokenType'
+  elementTypeClass = 'porokhin.bstruct.BasicTokenType'
+  // Name and the location of the parser which will be generated.
+      parserClass="porokhin.bstruct.BasicParser"
+
+      // All nodes will extend this class. This wraps AST node to a PSI node.
+      extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+      // Prefix for all generated classes.
+      psiClassPrefix="Basic"
+      // Suffix for implementation classes.
+      psiImplClassSuffix="Impl"
+
+      // Location to be used when generating PSI classes.
+      psiPackage="porokhin.bstruct.psi"
+      // Location to be used when generating PSI implementation classes.
+      psiImplPackage="porokhin.bstruct.impl"
+
+      // Element type holder class name. This class will be used extensively throughout the tutorial.
+      elementTypeHolderClass="porokhin.bstruct.BasicTypes"
+
+      // Class which will be used to create leaf nodes.
+      tokenTypeClass="porokhin.bstruct.BasicTokenType"
 
  tokens = [
     OP_EQ="="
@@ -16,27 +37,39 @@ elementTypeClass = 'porokhin.bstruct.BasicTokenType'
     RIGHT_BRACKET="]"
     LEFT_PAREN="("
     RIGHT_PAREN=")"
-    DIM="dim"
+    DIM="regexp:(?i)dim"
     SUB="sub"
+    FUNCTION="function"
     DECLARE="declare"
-    INCLUDE="include"
-    AS="as"
+    AS="regexp:(?i)as"
     IF="if"
     END="end"
     EXIT="exit"
-
-    T_INTEGER="integer"
-    T_STRING="string"
-
-    space='regexp:\s+'
-    id="regexp:\w+"
-    string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\\'|\\)*\")"
-    number="regexp:\d+"
-    line_comment="regexp:'.*"
+    CALL="call"
+    T_INTEGER="regexp:(?i)integer"
+    T_STRING="regexp:(?i)string"
+    T_LOGICAL="regexp:(?i)logical"
+    SPACE='regexp:\s+'
+    NAME="regexp:([a-zA-Z_][a-zA-Z0-9_.]*)"
+    STRING="regexp:(\".*\")"
+    NUMBER="regexp:[0-9]+"
+    LINE_COMMENT="regexp:'.*"
+    INCLUDE='Include'
   ]
 }
 
-basicUnit ::= top*
-private top ::= keyword | symbolunit
-keyword ::= DIM | SUB | DECLARE | INCLUDE | AS | IF | END | EXIT
-symbolunit ::= OP_EQ | OP_OR | OP_AND | LEFT_BRACKET | RIGHT_BRACKET | LEFT_PAREN | RIGHT_PAREN
+basicUnit ::= expr*
+sub_or_function ::= (SUB | FUNCTION) name body END (SUB | FUNCTION)
+param ::= name AS type ','?
+type ::= T_INTEGER | T_STRING | T_LOGICAL | NAME
+symbol_unit ::= OP_EQ | OP_OR | OP_AND | LEFT_BRACKET | RIGHT_BRACKET | LEFT_PAREN | RIGHT_PAREN | LINE_COMMENT
+body ::= expr *
+expr ::=  include | dim_value | val_init | call_func | sub_or_function | declare_sub | declare_function
+declare_sub ::= 'DECLARE' 'SUB' name [LEFT_PAREN param+ RIGHT_PAREN]
+declare_function ::= 'DECLARE' 'FUNCTION' name [LEFT_PAREN param+ RIGHT_PAREN] AS type
+include ::= 'INCLUDE' STRING
+dim_value ::= DIM param
+val_init ::= name OP_EQ value
+value ::=  "regexp:\d+" | STRING
+call_func ::= CALL (FUNCTION | SUB)
+name ::= !(INCLUDE) NAME
